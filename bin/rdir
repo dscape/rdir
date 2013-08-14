@@ -1,0 +1,75 @@
+#!/usr/bin/env node
+
+var glob = require('glob'),
+  path = require('path'),
+  spawn = require('child_process').spawn;
+
+var timeout = +process.env.TEST_TIMEOUT || 10000,
+  dirname = process.argv[2],
+  exitCode = 0;
+
+//
+// read a directory
+//
+glob(path.join(dirname, "**/test-*.js"), function (e, tests) {
+  if (e) {
+    throw e;
+  }
+
+  (function next() {
+    //
+    // no more tests to run
+    // return exit code
+    //
+    if (tests.length === 0) {
+      process.exit(exitCode);
+    }
+
+    //
+    // current test
+    //
+    var file = tests.shift();
+    console.log(file);
+
+    //
+    // spawn the test
+    //
+    var proc = spawn('node', [file]);
+
+    //
+    // control if this test was killed by timeout
+    //
+    var killed = false;
+
+    //
+    // set appropriate timeout as defined
+    // on env var
+    //
+    var t = setTimeout(function () {
+      proc.kill();
+      exitCode += 1;
+      console.error(file + ' timeout');
+      killed = true;
+    }, timeout);
+
+    //
+    // pipe to process so we can see
+    // what is happening
+    //
+    proc.stdout.pipe(process.stdout);
+    proc.stderr.pipe(process.stderr);
+
+    //
+    // handle exit codes
+    //
+    proc.on('exit', function (code) {
+      if (code && !killed) {
+        console.error(file + ' failed');
+      }
+      exitCode += code || 0;
+      clearTimeout(t);
+      next();
+    });
+  })();
+
+});

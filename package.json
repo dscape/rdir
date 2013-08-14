@@ -1,0 +1,32 @@
+{
+  "name": "rdir",
+  "version": "0.0.0",
+  "description": "runs a directory",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dscape/rdir.git"
+  },
+  "keywords": [
+    "run",
+    "directory",
+    "exec",
+    "spawn",
+    "whatevs"
+  ],
+  "bin": {
+    "rdir": "./bin/rdir"
+  },
+  "author": "mikeal rogers",
+  "license": "apache 2",
+  "preferGlobal": true,
+  "bugs": {
+    "url": "https://github.com/dscape/rdir/issues"
+  },
+  "dependencies": {
+    "glob": "~3.2.6"
+  }
+}
