@@ -5,7 +5,7 @@ var glob = require('glob'),
   spawn = require('child_process').spawn;
 
 var timeout = +process.env.TEST_TIMEOUT || 10000,
-  dirname = process.argv[2],
+  dirname = process.argv[2] || 'test',
   exitCode = 0;
 
 //
